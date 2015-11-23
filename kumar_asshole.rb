@@ -5,15 +5,12 @@ require 'gmail'
 
 Dotenv.load
 
-GMAIL_USERNAME = ENV['GMAIL_USERNAME']
-GMAIL_PASSWORD = ENV['GMAIL_PASSWORD']
-
-gmail = Gmail.connect(username, password)
+gmail = Gmail.connect(ENV['GMAIL_USERNAME'], ENV['GMAIL_PASSWORD'])
 
 KEYWORDS_REGEX = /sorry|help|wrong/i
 
 gmail.inbox.find(:unread, from: 'kumar.a@example.com').each do |email|
-  if email.body[KEYWORDS_REGEX]
+  if email.body.downcase[KEYWORDS_REGEX]
     # Restore DB and send a reply
     email.label('Database fixes')
     reply = reply_to(email.subject)
